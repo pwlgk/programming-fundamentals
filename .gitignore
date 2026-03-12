@@ -1,2 +1,3 @@
-lab2/ark_station
-lab1/train_calc
+*.o
+metro_calc
+ark_station
