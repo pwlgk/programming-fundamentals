@@ -9,13 +9,11 @@ Station::Station() : day(1), energy(500), maxEnergy(1000), bits(100) {}
 void Station::Init(std::string name) {
     stationName = name;
 
-    // Стартовый набор модулей по ТЗ
     modules.push_back(Module(ModuleType::ARCHIVE));
     modules.push_back(Module(ModuleType::CONTROL_CENTER));
     modules.push_back(Module(ModuleType::HOUSING));
     modules.push_back(Module(ModuleType::GENERATOR));
 
-    // Стартовый набор роботов: 2 Интегратора, 2 Хранителя
     robots.push_back(Robot("R-01", Faction::INTEGRATOR));
     robots.push_back(Robot("R-02", Faction::INTEGRATOR));
     robots.push_back(Robot("Ева", Faction::KEEPER));
@@ -30,7 +28,7 @@ void Station::ProcessDay() {
     ProcessProduction();    // 1. Добыча
     ProcessHousing();       // 2. Жилье и износ
     ProcessSignal();        // 3. Связь
-    ProcessTaxes();         // 4. Налоги (Вариант 7)
+    ProcessTaxes();         // 4. Налоги 
     ProcessCleanup();       // 5. Очистка погибших
 
     day++;
@@ -71,7 +69,7 @@ void Station::ProcessHousing() {
     for (auto& r : robots) occupancy += r.GetHousingNeed();
 
     if (occupancy > capacity) {
-        int penalty = 15; // Пятикратный урон (база 5 + штраф 15)
+        int penalty = 15; 
         logs.push_back("КРИТИЧЕСКОЕ ПЕРЕНАСЕЛЕНИЕ! Износ шасси увеличен.");
         for (auto& r : robots) {
             r.TakeDamage(penalty, 0);
@@ -80,8 +78,7 @@ void Station::ProcessHousing() {
 }
 
 void Station::ProcessSignal() {
-    // Математическая модель: Шанс = МощностьЦУ / (МощностьЦУ + Роботы * 10)
-    // Мощность ЦУ возьмем как 100 (модуль 1 в векторе - Control Center)
+
     double power = 100.0;
     double interference = robots.size() * 10.0;
     double chance = (power / (power + interference)) * 100.0;
@@ -96,7 +93,6 @@ void Station::ProcessSignal() {
 }
 
 void Station::ProcessTaxes() {
-    // Вариант 7: Налог каждые 5 дней
     if (day % 5 == 0) {
         if (energy > 0) {
             int tax = energy * 0.10; // 10% энергии
@@ -113,7 +109,6 @@ void Station::ProcessTaxes() {
 void Station::ProcessCleanup() {
     size_t initialCount = robots.size();
     
-    // Идиома Erase-Remove для безопасного удаления из вектора
     robots.erase(std::remove_if(robots.begin(), robots.end(), [](const Robot& r) {
         return r.IsDead();
     }), robots.end());
