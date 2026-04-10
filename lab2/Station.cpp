@@ -37,24 +37,21 @@ void Station::ProcessDay() {
 void Station::ProcessProduction() {
     int totalE = 0, totalD = 0;
 
-    // Ресурсы от модулей
     for (auto& m : modules) {
         totalE += m.GetEnergyOutput();
         totalD += m.GetDataOutput();
     }
 
-    // Ресурсы от роботов и их старение
     for (auto& r : robots) {
         auto res = r.ProduceResources();
         totalE += res.first;
         totalD += res.second;
-        r.TakeDamage(5, 5); // Базовое старение каждый день
+        r.TakeDamage(5, 5); 
     }
 
     energy += totalE;
     bits += totalD;
 
-    // Ограничение по максимуму энергии
     if (energy > maxEnergy) energy = maxEnergy;
     if (energy < 0) energy = 0;
 
