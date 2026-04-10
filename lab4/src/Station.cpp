@@ -178,7 +178,9 @@ void Station::SynthesizeConsciousness(int idxA, int idxB) {
                 energy -= cost;
                 Robot* child = *rA + *rB;
                 robots.push_back(child);
-                logs.push_back("СИНТЕЗ: Успешно создан новый робот: " + child->GetName());
+                std::string msg = "СИНТЕЗ: Успешно создан новый робот: " + child->GetName();
+                logs.push_back(msg);
+                std::cout << "\n[!] " << msg << "\n";
             } else {
                 logs.push_back("СИНТЕЗ: Недостаточно энергии (нужно " + std::to_string(cost) + ")");
             }
@@ -244,8 +246,11 @@ void Station::UpgradeModule(int index) {
             energy -= cost;
             bits -= cost;
             m->Upgrade();
-            logs.push_back("АПГРЕЙД: " + m->GetTypeName() + " улучшен до уровня " + std::to_string(m->GetLevel()));
+            std::string msg = "АПГРЕЙД: " + m->GetTypeName() + " улучшен до уровня " + std::to_string(m->GetLevel()) + " (Затрачено: " + std::to_string(cost) + " Э / " + std::to_string(cost) + " Д)";
+            logs.push_back(msg);
+            std::cout << "\n[!] " << msg << "\n";
         } else {
+            std::cout << "\n[!] ОШИБКА: Недостаточно ресурсов для апгрейда (нужно " << cost << " Э / " << cost << " Д)!\n";
             logs.push_back("АПГРЕЙД: Недостаточно ресурсов.");
         }
     }
@@ -258,7 +263,9 @@ void Station::CombineModules(int idxA, int idxB) {
         Module* mB = modules[idxB];
         Module* newMod = *mA + *mB;
         if (newMod) {
-            logs.push_back("СБОРКА: Модули объединены! Создан " + newMod->GetTypeName() + " ур." + std::to_string(newMod->GetLevel()));
+            std::string msg = "СБОРКА: Модули объединены! Создан " + newMod->GetTypeName() + " ур. " + std::to_string(newMod->GetLevel());
+            logs.push_back(msg);
+            std::cout << "\n[!] " << msg << "\n";
             int maxIdx = std::max(idxA, idxB);
             int minIdx = std::min(idxA, idxB);
             delete modules[maxIdx];

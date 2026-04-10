@@ -28,11 +28,11 @@ int main() {
         std::cout << "--- КОМАНДНЫЙ ЦЕНТР ---\n";
         std::cout << "1. Запустить цикл (День)\n";
         std::cout << "2. Терминал Синтеза (Новый робот)\n";
-        std::cout << "3. Синтез сознания (Скрестить роботов) [Lab 4]\n";
+        std::cout << "3. Синтез сознания (Скрестить роботов)\n";
         std::cout << "4. Терминал Строительства (Новый модуль)\n";
-        std::cout << "5. Протоколы Модернизации (Улучшение/Сборка модуля) [Lab 4]\n";
-        std::cout << "6. Принудительный ремонт робота (++) [Lab 4]\n";
-        std::cout << "7. Детектор Клонов (Сравнить роботов ==) [Вариант 2]\n";
+        std::cout << "5. Протоколы Модернизации (Улучшение/Сборка модуля)\n";
+        std::cout << "6. Принудительный ремонт робота (++)\n";
+        std::cout << "7. Детектор Клонов (Сравнить роботов ==)\n";
         std::cout << "0. Аварийный выход\n";
         std::cout << "Ваш выбор: ";
 
@@ -92,20 +92,27 @@ int main() {
             else ark.BuildModule(mChoice);
         }
         else if (choice == 5) {
-            ark.PrintModules();
-            std::cout << "1. Улучшить модуль за ресурсы\n";
-            std::cout << "2. Скрестить два одинаковых модуля (+)\n";
-            std::cout << "Выбор: ";
-            int mChoice;
-            if (!(std::cin >> mChoice)) ClearInput();
-            else {
+            bool inUpgradeMenu = true;
+            while (inUpgradeMenu) {
+                ark.PrintModules();
+                std::cout << "--- ПРОТОКОЛЫ МОДЕРНИЗАЦИИ ---\n";
+                std::cout << "1. Улучшить модуль (Энергия + Данные)\n";
+                std::cout << "2. Скрестить два одинаковых модуля (+)\n";
+                std::cout << "0. Назад в командный центр\n";
+                std::cout << "Выбор: ";
+                int mChoice;
+                if (!(std::cin >> mChoice)) {
+                    ClearInput();
+                    break;
+                }
+                
                 if (mChoice == 1) {
-                    std::cout << "Введите индекс модуля: ";
+                    std::cout << "Введите индекс модуля для улучшения: ";
                     int idx;
                     if (!(std::cin >> idx)) ClearInput();
                     else ark.UpgradeModule(idx);
                 } else if (mChoice == 2) {
-                    std::cout << "Введите индексы двух модулей (через пробел): ";
+                    std::cout << "Введите индексы двух модулей через пробел: ";
                     int a, b;
                     if (!(std::cin >> a >> b)) {
                         ClearInput();
@@ -114,17 +121,20 @@ int main() {
                         Module* mB = ark.GetModule(b);
                         if (mA && mB && a != b && mA->GetTypeName() == mB->GetTypeName() && mA->GetLevel() == mB->GetLevel()) {
                             std::cout << "\n--- ПРОГНОЗ СБОРКИ ---\n";
-                            std::cout << "Исходный уровень: " << mA->GetLevel() << "\n";
-                            std::cout << "Результат: " << mA->GetTypeName() << " УРОВНЯ " << mA->GetLevel() + 1 << "\n";
+                            std::cout << "Тип: " << mA->GetTypeName() << "\n";
+                            std::cout << "Результат: Уровень " << mA->GetLevel() + 1 << "\n";
                             std::cout << "Подтвердить слияние? (y/n): ";
                             char confirm;
                             std::cin >> confirm;
                             if (confirm == 'y' || confirm == 'Y') ark.CombineModules(a, b);
-                            else std::cout << "Операция отменена.\n";
                         } else {
                             std::cout << "[!] Модули несовместимы или не найдены.\n";
                         }
                     }
+                } else if (mChoice == 0) {
+                    inUpgradeMenu = false;
+                } else {
+                    std::cout << "[!] Неизвестная команда.\n";
                 }
             }
         }

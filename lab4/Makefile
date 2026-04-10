@@ -1,17 +1,28 @@
 CXX = g++
-CXXFLAGS = -std=c++17 -Wall -Wextra
+CXXFLAGS = -std=c++17 -Wall -Wextra -Iinclude
 
-SRCS = main.cpp Station.cpp Robot.cpp IntegratorRobot.cpp KeeperRobot.cpp LocalCalculatorRobot.cpp Module.cpp ArchiveModule.cpp ControlCenterModule.cpp HousingModule.cpp GeneratorModule.cpp
-OBJS = $(SRCS:.cpp=.o)
+SRC_DIR = src
+OBJ_DIR = build
+
+# Ищем все исходники
+SRCS = main.cpp $(wildcard $(SRC_DIR)/*.cpp)
+# Формируем пути для объектных файлов в папке build
+OBJS = $(patsubst %.cpp, $(OBJ_DIR)/%.o, $(SRCS))
+
 EXEC = ark_station
 
 all: $(EXEC)
 
+# Линковка исполняемого файла
 $(EXEC): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
-%.o: %.cpp
+# Универсальное правило для компиляции .cpp в .o внутри папки build
+$(OBJ_DIR)/%.o: %.cpp
+	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+# Очистка всего мусора
 clean:
-	rm -f $(OBJS) $(EXEC)
+	rm -rf $(OBJ_DIR) $(EXEC)
+	rm -f *.o src/*.o
