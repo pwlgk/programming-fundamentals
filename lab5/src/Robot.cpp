@@ -65,7 +65,7 @@ std::ostream& operator<<(std::ostream& os, const Robot& robot) {
     return os;
 }
 
-Robot* Robot::operator+(const Robot& other) const {
+std::unique_ptr<Robot> Robot::operator+(const Robot& other) const {
     double mutation = 0.8 + static_cast<double>(rand()) / (RAND_MAX / (1.2 - 0.8));
     
     int childChassis = ((chassis + other.chassis) / 2) * mutation;
@@ -80,15 +80,15 @@ Robot* Robot::operator+(const Robot& other) const {
     int powerA = chassis + firmware;
     int powerB = other.chassis + other.firmware;
     
-    Robot* newBorn = nullptr;
+    std::unique_ptr<Robot> newBorn = nullptr;
     if (powerA >= powerB) {
-        if (GetFactionName() == "Интегратор") newBorn = new IntegratorRobot(newName);
-        else if (GetFactionName() == "Хранитель") newBorn = new KeeperRobot(newName);
-        else newBorn = new LocalCalculatorRobot(newName);
+        if (GetFactionName() == "Интегратор") newBorn = std::make_unique<IntegratorRobot>(newName);
+        else if (GetFactionName() == "Хранитель") newBorn = std::make_unique<KeeperRobot>(newName);
+        else newBorn = std::make_unique<LocalCalculatorRobot>(newName);
     } else {
-        if (other.GetFactionName() == "Интегратор") newBorn = new IntegratorRobot(newName);
-        else if (other.GetFactionName() == "Хранитель") newBorn = new KeeperRobot(newName);
-        else newBorn = new LocalCalculatorRobot(newName);
+        if (other.GetFactionName() == "Интегратор") newBorn = std::make_unique<IntegratorRobot>(newName);
+        else if (other.GetFactionName() == "Хранитель") newBorn = std::make_unique<KeeperRobot>(newName);
+        else newBorn = std::make_unique<LocalCalculatorRobot>(newName);
     }
     
     newBorn->SetChassis(childChassis);
